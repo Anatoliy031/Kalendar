@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Календарь на 2026 год</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .year {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .month {
+            width: 30%;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .month-header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+        }
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background-color: #f2f2f2;
+            font-weight: bold;
+            text-align: center;
+        }
+        .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+        .day {
+            text-align: center;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .holiday {
+            color: red;
+            font-weight: bold;
+        }
+        .weekend {
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Календарь на 2026 год</h1>
+        <div class="year" id="calendar"></div>
+    </div>
+
+    <script>
+        // Официальные праздники РФ в 2026 году
+        const holidays = {
+            '01-01': 'Новый год',
+            '01-02': 'Новогодние каникулы',
+            '01-03': 'Новогодние каникулы',
+            '01-04': 'Новогодние каникулы',
+            '01-05': 'Новогодние каникулы',
+            '01-06': 'Новогодние каникулы',
+            '01-07': 'Рождество Христово',
+            '02-23': 'День защитника Отечества',
+            '03-08': 'Международный женский день',
+            '05-01': 'Праздник Весны и Труда',
+            '05-09': 'День Победы',
+            '06-12': 'День России',
+            '11-04': 'День народного единства'
+        };
+
+        const months = [
+            'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+            'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+        ];
+
+        const daysOfWeek = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+
+        function isWeekend(dayOfWeek) {
+            return dayOfWeek === 5 || dayOfWeek === 6; // Суббота и воскресенье
+        }
+
+        function generateCalendar() {
+            const calendar = document.getElementById('calendar');
+            
+            for (let month = 0; month < 12; month++) {
+                const monthDiv = document.createElement('div');
+                monthDiv.className = 'month';
+
+                const header = document.createElement('div');
+                header.className = 'month-header';
+                header.textContent = months[month];
+                monthDiv.appendChild(header);
+
+                const weekdaysDiv = document.createElement('div');
+                weekdaysDiv.className = 'weekdays';
+                daysOfWeek.forEach(day => {
+                    const dayDiv = document.createElement('div');
+                    dayDiv.textContent = day;
+                    weekdaysDiv.appendChild(dayDiv);
+                });
+                monthDiv.appendChild(weekdaysDiv);
+
+                const daysDiv = document.createElement('div');
+                daysDiv.className = 'days';
+
+                // Получаем первый день месяца
+                const firstDay = new Date(2026, month, 1);
+                const startingDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1; // Понедельник — 0
+
+                // Количество дней в месяце
+                const totalDays = new Date(2026, month + 1, 0).getDate();
+
+                // Заполняем пустые ячейки до первого дня месяца
+                for (let i = 0; i < startingDay; i++) {
+                    const emptyDay = document.createElement('div');
+                    emptyDay.className = 'day';
+                    daysDiv.appendChild(emptyDay);
+                }
+
+                // Заполняем дни месяца
+                for (let day = 1; day <= totalDays; day++) {
+                    const dayDiv = document.createElement('div');
+                    dayDiv.className = 'day';
+
+                    const dateStr = `${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    if (holidays[dateStr]) {
+                        dayDiv.className += ' holiday';
+                        dayDiv.title = holidays[dateStr];
+                    }
+
+                    const currentDayOfWeek = (startingDay + day - 1) % 7;
+                    if (isWeekend(currentDayOfWeek)) {
+                        dayDiv.className += ' weekend';
+                    }
+
+                    dayDiv.textContent = day;
+                    daysDiv.appendChild(dayDiv);
+                }
+
+                monthDiv.appendChild(daysDiv);
+                calendar.appendChild(monthDiv);
+            }
+        }
+
+        generateCalendar();
+    </script>
+</body>
+</html>
