@@ -55,13 +55,36 @@
             text-align: center;
             padding: 8px;
             border-bottom: 1px solid #eee;
+            cursor: pointer;
+            position: relative;
+        }
+        .day:hover {
+            background-color: #e0f7fa;
         }
         .holiday {
-            color: red;
+            color: white;
             font-weight: bold;
+            background-color: #f44336;
         }
         .weekend {
             color: #888;
+        }
+        .tooltip {
+            visibility: hidden;
+            background-color: black;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+        .day:hover .tooltip {
+            visibility: visible;
         }
     </style>
 </head>
@@ -146,7 +169,12 @@
                     const dateStr = `${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                     if (holidays[dateStr]) {
                         dayDiv.className += ' holiday';
-                        dayDiv.title = holidays[dateStr];
+                        
+                        // Создаём подсказку с названием праздника
+                        const tooltip = document.createElement('div');
+                        tooltip.className = 'tooltip';
+                        tooltip.textContent = holidays[dateStr];
+                        dayDiv.appendChild(tooltip);
                     }
 
                     const currentDayOfWeek = (startingDay + day - 1) % 7;
